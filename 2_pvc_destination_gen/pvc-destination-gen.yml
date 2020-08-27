@@ -67,10 +67,11 @@
           content: "{{ adjusted_volumes | to_nice_json }}"
           dest: "{{ pv_size_adjustment_report_path }}"
 
+
     - name: "Ensure the namespaces are created for the pvcs"
       k8s:
         state: present
-        definition: "{{ lookup('template', 'namespace.yml.j2') }}"
+        definition: "{{ lookup('template', 'namespace.json.j2') }}"
       loop: "{{ namespace_data }}"
       tags:
       - ensure_ns

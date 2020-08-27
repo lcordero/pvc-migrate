@@ -85,6 +85,8 @@
   - ingress_controller.resources | length > 0
   - ingress_controller.resources[0].get('status', {}).get('domain', '') != ''
 
+- debug: var=pvcs
+
 - name: "Create a pod for rsync"
   k8s:
     state: present
@@ -128,10 +130,12 @@
   until:
     - rsync_route.resources | length > 0
     - rsync_route.resources[0].get('spec', {}).get('host', '') != ''
-    - rsync_route.resources[0].get('status', {}).get('ingress', []) | length == 1
+    - rsync_route.resources[0].get('status', {}).get('ingress', []) | length > 0
     - rsync_route.resources[0].get('status', {}).get('ingress', [])[0].get('conditions', []) | length > 0
     - rsync_route.resources[0].status.ingress[0].conditions | json_query('[? type==`Admitted`]') | length > 0
     - rsync_route.resources[0].status.ingress[0].conditions | json_query('[? type==`Admitted`].status')
+  retries: 100
+  delay: 3
 
 - set_fact:
     failed_pvcs: []

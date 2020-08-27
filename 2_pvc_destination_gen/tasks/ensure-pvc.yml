@@ -1,8 +1,10 @@
+- debug: var=item
+
 - name: "Ensure pvc is created on destination"
   ignore_errors: yes
   k8s:
     state: present
-    definition: "{{ lookup('template', 'pvc.yml.j2') }}"
+    definition: "{{ lookup('template', 'pvc.json.j2') }}"
   register: patch_output
 
 - name: "Collect errors in patching pvc"

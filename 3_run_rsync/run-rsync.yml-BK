@@ -15,10 +15,19 @@
       set_fact:
         pvc_data: "{{ lookup('file', pvc_data_filepath) | from_json }}"
 
-    - name: "Create pod"
+    - name: "Ensuring certificate for stunnel"
+      import_tasks: tasks/stunnel-certs.yml
+      tags:
+      - stunnel_certs
+
+    - name: "Create pod and service"
       vars:
         pvc_namespace: "{{ item.namespace }}"
         pod_name: "pvc-migrate-pod-{{ (pvc_namespace | hash('md5'))[:10] }}"
+        svc_name: "pvc-migrate-svc-{{ (pvc_namespace | hash('md5'))[:10] }}"
+        route_name: "pvc-migrate-route-{{ (pvc_namespace | hash('md5'))[:10] }}"
+        rsyncd_config: "pvc-migrate-rsyncd-conf-{{ (pvc_namespace | hash('md5'))[:10] }}"
+        stunnel_config: "pvc-migrate-stunnel-conf-{{ (pvc_namespace | hash('md5'))[:10] }}"
         pvcs: "{{ item.pvcs }}"
-      include_tasks: tasks/create-pod.yml
+      include_tasks: tasks/create-pod-service.yml
       with_items: "{{ pvc_data }}"
