@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  annotations:
-    "{{ item.annotations | to_nice_yaml }}"
-  name: "{{ item.namespace }}"
-spec:
-  finalizers:
-  - kubernetes
