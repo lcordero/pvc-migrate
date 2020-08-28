@@ -15,6 +15,10 @@
       set_fact:
         pvc_data: "{{ lookup('file', pvc_data_filepath) | from_json }}"
 
+    - name: "debug"
+      debug: var=pvc_data
+
+
     - name: "Create pod"
       vars:
         pvc_namespace: "{{ item.namespace }}"

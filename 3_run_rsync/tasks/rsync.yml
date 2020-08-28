@@ -16,6 +16,7 @@
 - set_fact:
     mig_dest_data_location: "/mnt/{{ pvc_ns }}/{{ pvc_vol_safe_name }}"
     mig_source_data_location: "{{ mig_source_data_base_location }}/pods/{{ bound_pod_uid }}/volumes/{{ mig_source_data_location_k8s_mount }}/{{ volume_name }}/"
+    mig_source_host: "{{ node_name }}"
 
 - set_fact:
     source_validation_msg: |
@@ -48,9 +49,11 @@
 
     - name: "Login into Dest cluster"
       shell: "oc login --token={{ mig_dest_sa_token }} --server={{ mig_dest_server }}"
+      become: yes
+
 
     - name: "Synchronizing files. This may take a while..."
-      shell: "oc -n {{ pvc_ns }} rsync {{ mig_source_data_location }} {{ pod_name }}:{{ mig_dest_data_location }} --progress --delete --compress -c rsyncd"
+      shell: "oc -n {{ pvc_ns }} rsync {{ mig_source_data_location }} {{ rsync_pod_name }}:{{ mig_dest_data_location }} --progress --delete --compress -c rsyncd"
       register: sync_output
       become: yes
 

@@ -25,9 +25,10 @@ spec:
         memory: "{{ transfer_pod_mem_requests }}"
     imagePullPolicy: Always
     command:
-      - bash
+      - /bin/bash
       - -c
-      - "echo {{ mig_dest_ssh_user }}:$(echo $rsyncd_pass | base64 -d) > /etc/rsyncd.secrets && chmod 0600 /etc/rsyncd.secrets && /usr/bin/rsync --daemon --no-detach --port {{ rsyncd_port }} -vvv"
+      - sleep infinity
+      # - "echo {{ mig_dest_ssh_user }}:$(echo $rsyncd_pass | base64 -d) > /etc/rsyncd.secrets && chmod 0600 /etc/rsyncd.secrets && /usr/bin/rsync --daemon --no-detach --port {{ rsyncd_port }} -vvv"
     image: "{{ transfer_pod_image }}"
     volumeMounts:
 {% for pvc in pvcs %}
